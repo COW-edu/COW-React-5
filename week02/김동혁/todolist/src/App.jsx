@@ -41,11 +41,9 @@ function App() {
             index //map메서드는 inputList 배열의 각 요소에 대해 함수를 실행, 새 배열을 생성
           ) => (
             <li key={index}>
-              //앞서서 말했듯이 index를 게속 이용했기에 여기서도 리스트를
-              렌더링할때 각 항목에 index라는 키를 부여하는것
-              {todo} //자바스크립트 표현식사용, 변수출력
+              {todo}
               <button onClick={() => deleteTodo(index)}>삭제</button>{" "}
-            </li> // 할일 리스트 렌더링
+            </li> // 할일 리스트 렌더링  //앞서서 말했듯이 index를 게속 이용했기에 여기서도 리스트를 렌더링할때 각 항목에 index라는 키를 부여하는것 //자바스크립트 표현식사용, 변수출력
           )
         )}
       </ul>
