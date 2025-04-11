@@ -17,7 +17,7 @@ function App() {
       };
       setTodoList([...todoList, newTodo]);
       setTodo('');
-      setTodoId(todoId + 1);
+      setTodoId((prev) => prev + 1);
     }
   };
 
