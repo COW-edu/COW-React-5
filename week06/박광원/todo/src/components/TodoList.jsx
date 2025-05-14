@@ -1,4 +1,16 @@
-export default function TodoList({todo, deleteTodo, checkTodo}) {
+export default function TodoList({todo, setTodos}) {
+  const deleteTodo = (id) => {
+    setTodos(todos => todos.filter((todo) => todo.id !== id));
+  }
+  
+  const checkTodo = (id) => {
+    setTodos(prev =>
+      prev.map(todo =>
+        todo.id === id ? {...todo, checked: !todo.checked} : todo
+      )
+    )
+  }
+  
   const isChecked = () => {
     checkTodo(todo.id);
   }
