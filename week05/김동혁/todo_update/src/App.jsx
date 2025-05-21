@@ -1,14 +1,27 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 //js도 기본개념정도만 알고 react도 처음이기에 생소했던 부분이나 처음 알게된 개념 다 주석으로 달았습니다.
 
 function App() {
   //컴포넌트 하나에 다 때려박는 관점으로 코드를 짰습니다.
   const [inputValue, setInputValue] = useState("");
-  const [inputList, setInputList] = useState([]);
+  const [inputList, setInputList] = useState(storeTodos); // 기존에는 빈배열로 고정한 대신 localstorage를 사용한 후 엔 아예 storeTodos라는 함수를 부르는것으로 초기값을 변경경
+
   //inputvalue는 string으로 inputList는 배열로
   //useState 훅 사용시 [a,b]이런식이라면 a는 현재상태의 값, b는 상태를 업데이트하는 함수(이함수를 호출하면 a의 값을 변경가능)
   // 입력값을 setInputValue 으로 set
+
+  //여기부터 local storage 시작
+  //react훅은 다른 코드보다 위인 최상단에 쓰여야함
+  useEffect(() => {
+    localStorage.setItem("inputList", JSON.stringify(inputList)); //localstorage에는 문자열만 저장됨 숫자또한 자동으로 문자열로 저장, 문자열이나 숫자는 굳이 json문자열로 변환할필요없지만 배열 같은 복잡한 데이터타입은 그냥 setitem하면 이상하게 저장될 수 있음음
+  }, [inputList]);
+
+  function storeTodos() {
+    const inputList = localStorage.getItem("inputList");
+    return inputList ? JSON.parse(inputList) : []; //json.parse는 json.stringify 의 반대격 느낌, 원래의 객체/배열 타입으로 돌려놓음음
+  }
+
   const changeTodoInput = (e) => {
     setInputValue(e.target.value);
   };
