@@ -1,18 +1,18 @@
+import axios from 'axios';
 import { useState } from 'react'
 
-export default function TodoInput({setTodos}) {
+export default function TodoInput({setTodos, url}) {
   const [input, setInput] = useState("");
-
-  const addTodo = () => {
+  
+  const postTodo = async () => {
     if (input.trim() === "") return;
-    const newTodo = {
-      id: Date.now(),
-      text: input,
-      checked: false
-    }
-    setTodos((prev) => [...prev, newTodo]);
+    const res = await axios.post(`${url}`, {
+      content: input,
+      isComplete: false
+    })
+    setTodos((prev) => [...prev, res.data]);
     setInput("");
-  };
+  }
 
   return(
     <div className='flex justify-center'>
@@ -23,12 +23,12 @@ export default function TodoInput({setTodos}) {
         onChange={(e) => setInput(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter'){
-            addTodo();
+            postTodo();
           }
         }}
         placeholder="할 일을 입력하세요"
       />
-      <button className="w-16 py-2 px-4 bg-blue-500 text-white rounded-tr-xl rounded-br-xl hover:bg-blue-700" onClick={addTodo}>추가</button>
+      <button className="w-16 py-2 px-4 bg-blue-500 text-white rounded-tr-xl rounded-br-xl hover:bg-blue-700" onClick={postTodo}>추가</button>
     </div>
   )
 }
