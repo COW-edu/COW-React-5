@@ -1,61 +1,61 @@
 import { useState, useEffect, useCallback } from 'react';
 import TodoInput from './components/TodoInput';
 import TodoList from './components/TodoList';
-import * as api from './api/TodoApi';
+import * as api from './api/TodoFetchApi';
 
 function App() {
-  const [todo, setTodo] = useState('');
+  const [content, setContent] = useState('');
   const [todoList, setTodoList] = useState([]);
 
   const fetchTodos = useCallback(async () => {
     try {
-      const todosFromApi = await api.getTodos();
-      setTodoList(todosFromApi);
-    } catch (err) {
-      console.log(err);
+      const data = await api.getTodos();
+      setTodoList(() => [...data]);
+    } catch (error) {
+      console.error(error);
     }
   }, []);
 
   useEffect(() => {
     fetchTodos();
-  }, [fetchTodos]); // useCallback에 감싸져 배열 사용 가능
+  }, [fetchTodos]);
 
   const addTodo = async () => {
-    if (todo.trim() !== '') {
+    if (content.trim() !== '') {
       try {
-        const newTodoFromApi = await api.postTodos(todo);
-        setTodoList([...todoList, newTodoFromApi]);
-        setTodo('');
-      } catch (err) {
-        console.error(err);
+        const newTodo = await api.postTodo(content);
+        setTodoList((prevList) => [...prevList, newTodo]);
+        setContent('');
+      } catch (error) {
+        console.error(error);
       }
-    }
-  };
-
-  const updateTodoContent = async (id, newContent) => {
-    try {
-      const updatedTodoFromApi = await api.putContent(id, newContent);
-      setTodoList((prevTodoList) => prevTodoList.map((todo) => (todo.id === id ? updatedTodoFromApi : todo)));
-    } catch (err) {
-      console.error(err);
     }
   };
 
   const deleteTodo = async (id) => {
     try {
-      await api.deleteTodo(id);
-      setTodoList((prevTodoList) => prevTodoList.filter((item) => item.id !== id));
-    } catch (err) {
-      console.error(err);
+      const res = await api.deleteTodo(id);
+      setTodoList((prevTodoList) => prevTodoList.filter((todo) => todo.id !== res.id));
+    } catch (error) {
+      console.error(error);
     }
   };
 
-  const toggleComplete = async (id) => {
+  const updateTodo = async (id, content) => {
     try {
-      const updatedTodoFromApi = await api.putIsComplete(id);
-      setTodoList((prevTodoList) => prevTodoList.map((item) => (item.id === id ? updatedTodoFromApi : item)));
-    } catch (err) {
-      console.error(err);
+      const res = await api.putTodo(id, content);
+      setTodoList((prevTodoList) => prevTodoList.map((todo) => (todo.id === res.id ? res : todo)));
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const toggleComplete = async (id, isComplete) => {
+    try {
+      const res = await api.patchTodo(id, isComplete);
+      setTodoList((prevTodoList) => prevTodoList.map((todo) => (todo.id === res.id ? res : todo)));
+    } catch (error) {
+      console.error(error);
     }
   };
 
@@ -64,8 +64,8 @@ function App() {
       <h1 id='listName' className='text-[3.2em] leading-[1.1] mt-0 mb-[25px]'>
         Todo List
       </h1>
-      <TodoInput todo={todo} setTodo={setTodo} addTodo={addTodo} />
-      <TodoList todoList={todoList} deleteTodo={deleteTodo} toggleComplete={toggleComplete} updateTodoContent={updateTodoContent} />
+      <TodoInput content={content} setContent={setContent} addTodo={addTodo} />
+      <TodoList todoList={todoList} updateTodo={updateTodo} deleteTodo={deleteTodo} toggleComplete={toggleComplete} />
     </div>
   );
 }

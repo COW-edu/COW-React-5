@@ -1,11 +1,12 @@
-function TodoInput({ todo, setTodo, addTodo }) {
+function TodoInput({ content, setContent, addTodo }) {
   return (
     <div id='inputBlock' className='flex'>
       <input
         className='p-2.5 mr-1.5 border-none border-r-[5px] bg-[#2e2e2e] rounded-[5px] text-white'
+        autoFocus
         id='listInput'
-        value={todo}
-        onChange={(e) => setTodo(e.target.value)}
+        value={content}
+        onChange={(e) => setContent(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === 'Enter') {
             addTodo();
